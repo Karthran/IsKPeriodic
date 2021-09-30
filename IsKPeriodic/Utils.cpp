@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <vector>
 
 #include "Utils.h"
@@ -35,10 +35,13 @@ auto getValue() -> int
 auto IsKPeriodic(const std::string& string, int period) -> bool
 {
     auto size{static_cast<int>(string.size())};
+
+    if (size < 2) return false;
+
     auto j{period};
     auto result{true};
 
-    for (auto i{0}; i < size - period; ++i, ++j)
+    for (auto i{0}; i < size - period; ++i, ++j) //Compare values ​​with an index difference equal to the period
     {
         if (string[i] == string[j]) continue;
         result = false;
@@ -56,9 +59,9 @@ auto IsPeriodic(const std::string& string, std::vector<int>& periods) -> int
 
     if (size < 2) return 0;
 
-    while (i < size)
-    {
-        if (string[i] == string[j])
+    while (i < size)                    //Build LPS array (Longest Preffix Suffix)
+    {                                   // ABABC 
+        if (string[i] == string[j])     // 00120
         {
             lps_arr[i] = ++j;
             ++i;
@@ -71,17 +74,17 @@ auto IsPeriodic(const std::string& string, std::vector<int>& periods) -> int
     }
 
     auto period{0};
-    auto current_item{0};
+    auto current_item{-1};
 
-    for (auto i{0}; i < size; ++i)
-    {
-        if (lps_arr[i] == 0) ++period;
+    for (auto i{0}; i < size; ++i)        // Looking for an index with which starts a constant increase values
+    {                                     // 0 0 1 2 0 1 2 3 4 3 4 5 6 7 8 9 ...              
+        if (lps_arr[i] == 0) ++period;    //                   ^ 
         else
         {
-            if (current_item >= lps_arr[i])
-            {
-                if (lps_arr[i] == 0) period = i + 1;
-                else period = i - lps_arr[i] + 1;
+            if (current_item >= lps_arr[i])          //                                                           |
+            {                                        //                                         indices   0 1 2 3 4 5 6 7 8 9 ...
+                if (lps_arr[i] == 0) period = i + 1; // Correct period if zero goes after non-zero value (0 0 1 2 0 1 2 3 4 3 4 5 6 7 8 9 ...)
+                else period = i - lps_arr[i] + 1;    // Correct period = index - (lps_arr[index] - 1)                   ^<--^     
             }
             else current_item = lps_arr[i];
         }
@@ -90,12 +93,12 @@ auto IsPeriodic(const std::string& string, std::vector<int>& periods) -> int
     if (period + current_item != size || current_item % period) return 0;
 
     auto periods_in_size = size / period;
-    int iterations = periods_in_size / 2 + 1;
+    int iterations = periods_in_size / 2;
 
     periods.push_back(period);
     auto number_of_periods{1};
 
-    for (auto i{1}; i < iterations; ++i)
+    for (auto i{1}; i < iterations; ++i) //Finding All Divisors of a periods_in_size
     {
         if (periods_in_size % (i + 1)) continue;
         periods.push_back(period * (i + 1));
