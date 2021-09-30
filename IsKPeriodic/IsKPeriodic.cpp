@@ -15,9 +15,9 @@ auto run_IsKPeriodic() -> void
     
     auto result{IsKPeriodic(string, period)};
     if (result)
-        std::cout << "The string is periodic, period: " << period << std::endl;
+        std::cout << period <<" is the period for this string. " << std::endl;
     else
-        std::cout << "The string is not periodic." << std::endl;
+        std::cout << period <<" is not a period for this string." << std::endl;
 }
 
 auto run_IsPeriodic() -> void 
