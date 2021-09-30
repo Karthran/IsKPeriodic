@@ -3,7 +3,6 @@
 #include <iomanip>
 
 #include "Utils.h"
-#include "IsKPeriodic.h"
 
 
 auto run_IsKPeriodic() -> void
